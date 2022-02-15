@@ -1,3 +1,4 @@
+const  ObjectId = require('mongodb');
 const getDb = require('../mongodb');
 let db = null;
 class Pacientes {
@@ -41,7 +42,7 @@ class Pacientes {
     return rslt
   }
 
-  getAll () {
+  async getAll () {
     /*return new Promise ( (accept, reject) => {
       /*db.all('SELECT * from pacientes;', (err, rows) => {
         if(err){
@@ -52,9 +53,13 @@ class Pacientes {
         }
       });
     });*/
+
+    const cursor = this.collection.find({});
+    const documents = await cursor.toArray();
+    return documents;
   }
 
-  getById(id) {
+  async getById(id) {
     /*return new Promise((accept, reject) => {
       db.get(
         'SELECT * from pacientes where id=?;',
@@ -68,9 +73,14 @@ class Pacientes {
         }
       });
     });*/
+
+    const _id = new ObjectId(id);
+    const filter = {_id};
+    const myDocument= this.collection.findOne(filter);
+    return myDocument;
   }
 
-  updateOne (id, nombre, apellidos, identidad, telefono, correo) {
+  async updateOne (id, nombre, apellidos, identidad, telefono, correo) {
    /* return new Promise( (accept, reject) =>{
       const sqlUpdate = 'UPDATE pacientes set nombre = ?,apellidos = ?, telefono = ?, identidad = ?, email = ? where id = ?';
       db.run(
@@ -86,6 +96,18 @@ class Pacientes {
         }
       );
     });*/
+
+    const filter = {_id: new ObjectId(id)};
+    const updateCmd = {
+      '$set':{
+        nombre,
+        apellidos,
+        identidad,
+        telefono,
+        correo
+      }
+    };
+    const rslt = await this.collection.updateOne(filter, updateCmd);
   }
 
   deleteOne (id) {
