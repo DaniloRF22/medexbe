@@ -110,7 +110,7 @@ class Pacientes {
     const rslt = await this.collection.updateOne(filter, updateCmd);
   }
 
-  deleteOne (id) {
+  async deleteOne (id) {
     /*return new Promise( (accept, reject) =>{
       const sqlDelete = 'DELETE FROM pacientes where id=?';
       db.run(
@@ -126,6 +126,7 @@ class Pacientes {
         }
       );
     });*/
+
   }
 }
 
