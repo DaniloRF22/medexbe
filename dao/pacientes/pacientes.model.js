@@ -1,3 +1,4 @@
+const res = require('express/lib/response');
 const  ObjectId = require('mongodb');
 const getDb = require('../mongodb');
 let db = null;
@@ -127,6 +128,16 @@ class Pacientes {
       );
     });*/
 
+  }
+
+  async getFaceted(page, items, filter={}){
+    const cursor = this.collection.find(filter);
+    const totalItems = await cursor.count();
+    cursor.skip((page-1)*items);
+    cursor.limit(items);
+
+    const resultados = await cursor.toArray();
+    return {resultados, totalItems,page,items, totalPages: (Math.ceil(totalItems/items))};
   }
 }
 
