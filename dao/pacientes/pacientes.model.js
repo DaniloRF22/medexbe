@@ -1,5 +1,5 @@
 const res = require('express/lib/response');
-const  ObjectId = require('mongodb');
+const  {ObjectId} = require('mongodb');
 const getDb = require('../mongodb');
 let db = null;
 class Pacientes {
@@ -109,6 +109,36 @@ class Pacientes {
       }
     };
     const rslt = await this.collection.updateOne(filter, updateCmd);
+  }
+
+  async updateAddTagg(id, tagEntry){
+    const updateCmd = {
+      "$push":{
+        tags: tagEntry
+      }
+    }
+    const filter = {_id: new ObjectId(id)};
+    return await this.collection.updateOne(filter, updateCmd);
+  }
+
+  async updateAddTagSet(id, tagEntry){
+    const updateCmd = {
+      "$addToSet":{
+        tags: tagEntry
+      }
+    }
+    const filter = { _id: new ObjectId(id) };
+    return await this.collection.updateOne(filter, updateCmd);
+  }
+
+  async updatePopTag(id, tagEntry){
+    const updateCmd = {
+      "$pop":{
+        tags: tagEntry
+      }
+    }
+    const filter = {_id: new ObjectId(id)};
+    return await this.collection.updateOne(filter, updateCmd);
   }
 
   async deleteOne (id) {

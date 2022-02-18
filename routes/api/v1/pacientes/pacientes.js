@@ -97,6 +97,51 @@ router.put('/update/:id', async (req, res) =>{
   }
 });//PUT /update/:id
 
+router.put('/updateaddtag/:id', async (req, res) =>{
+  try {
+    const { tag } = req.body;
+    const {id} = req.params;
+    const result = await pacienteModel.updateAddTagg(id, tag);
+    res.status(200).json({
+      status: 'ok',
+      result
+    })
+  } catch (ex) {
+    console.log(ex);
+    res.status(500).json({ status: 'failed' });
+  }
+});
+
+router.put('/updateaddtagSet/:id', async (req, res) =>{
+  try {
+    const { tag } = req.body;
+    const {id} = req.params;
+    const result = await pacienteModel.updateAddTagSet(id, tag);
+    res.status(200).json({
+      status: 'ok',
+      result
+    })
+  } catch (ex) {
+    console.log(ex);
+    res.status(500).json({ status: 'failed' });
+  }
+});
+
+router.put('/removetag/:id', async (req, res) =>{
+  try {
+    const { tag } = req.body;
+    const {id} = req.params;
+    const result = await pacienteModel.updatePopTag(id, tag);
+    res.status(200).json({
+      status: 'ok',
+      result
+    })
+  } catch (ex) {
+    console.log(ex);
+    res.status(500).json({ status: 'failed' });
+  }
+});
+
 router.delete('/delete/:id', async (req, res) =>{
   try {
     const {id} = req.params;
