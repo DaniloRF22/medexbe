@@ -1,21 +1,23 @@
-const getDb = require('../db');
+const ObjectId = require('mongodb').ObjectId;
+const getDb = require('../mongodb');
 let db = null;
 class Expedientes {
 
   constructor() {
     getDb()
-    .then( (database) => {
-      db = database;
-      if (process.env.MIGRATE === 'true') {
-        const createStatement = 'CREATE TABLE IF NOT EXISTS expedientes (id INTEGER PRIMARY KEY AUTOINCREMENT, identidad TEXT, fecha TEXT, descripcion TEXT, observacion TEXT, registros TEXT, ultimaActualizacion TEXT);';
-        db.run(createStatement);
-      }
-    })
-    .catch((err) => { console.error(err)});
+      .then((database) => {
+        db = database;
+        this.collection = db.collection('Expedientes');
+        if (process.env.MIGRATE === 'true') {
+          // Por Si se ocupa algo
+        }
+      })
+      .catch((err) => { console.error(err) });
   }
 
-  new ( identidad, fecha, descripcion,observacion, registros, ultimaActualizacion ) {
-    return new Promise( (accept, reject)=> {
+
+  async new ( identidad, fecha, descripcion,observacion, registros, ultimaActualizacion ) {
+    /*return new Promise( (accept, reject)=> {
       db.run(
         'INSERT INTO expedientes (identidad, fecha, descripcion, observacion, registros, ultimaActualizacion ) VALUES (?, ?, ?, ?, ?, ?);',
         [identidad, fecha, descripcion, observacion, registros, ultimaActualizacion],
@@ -27,11 +29,37 @@ class Expedientes {
           accept(rslt);
         }
       );
-    });
+    });*/
+
+    const newExpediente ={
+      identidad,
+      fecha,
+      descripcion,
+      observacion,
+      registros,
+      ultimaActualizacion
+    };
+    const rslt = await this.collection.insertOne(newExpediente);
+    return rslt;
   }
 
-  getAll () {
-    return new Promise ( (accept, reject) => {
+  async getFaceted(page, items, filter = {}) {
+    const cursor = this.collection.find(filter);
+    const totalItems = await cursor.count();
+    cursor.skip((page -1) * items);
+    cursor.limit(items);
+    const resultados = await cursor.toArray();
+    return {
+      totalItems,
+      page,
+      items,
+      totalPages: (Math.ceil(totalItems / items)),
+      resultados
+    };
+  }
+  
+  async getAll () {
+    /*return new Promise ( (accept, reject) => {
       db.all('SELECT * from expedientes;', (err, rows) => {
         if(err){
           console.error(err);
@@ -40,11 +68,15 @@ class Expedientes {
           accept(rows);
         }
       });
-    });
+    });*/
+
+    const cursor = this.collection.find({});
+    const documents = await cursor.toArray();
+    return documents;
   }
 
-  getById(id) {
-    return new Promise((accept, reject) => {
+  async getById(id) {
+    /* return new Promise((accept, reject) => {
       db.get(
         'SELECT * from expedientes where id=?;',
         [id],
@@ -56,11 +88,17 @@ class Expedientes {
           accept(row);
         }
       });
-    });
+    }); */
+
+    const _id = new ObjectId(id);
+    const filter = {_id};
+    console.log(filter);
+    const myDocument = await this.collection.findOne(filter);
+    return myDocument;
   }
 
-  updateOne (id, identidad, fecha, descripcion,observacion, registros, ultimaActualizacion) {
-    return new Promise( (accept, reject) =>{
+  async updateOne (id, identidad, fecha, descripcion,observacion, registros, ultimaActualizacion) {
+    /* return new Promise( (accept, reject) =>{
       const sqlUpdate = 'UPDATE expedientes set identidad=?, fecha=?, descripcion=?, observacion=?, registros=?, ultimaActualizacion=? where id = ?';
       db.run(
         sqlUpdate,
@@ -74,11 +112,24 @@ class Expedientes {
           }
         }
       );
-    });
+    }); */
+
+    const filter = {_id: new ObjectId(id)};
+    const updateCmd = {
+      '$set':{
+        identidad,
+      fecha,
+      descripcion,
+      observacion,
+      registros,
+      ultimaActualizacion
+      }
+    };
+    return await this.collection.updateOne(filter, updateCmd);
   }
 
-  deleteOne (id) {
-    return new Promise( (accept, reject) =>{
+  async deleteOne (id) {
+    /* return new Promise( (accept, reject) =>{
       const sqlDelete = 'DELETE FROM expedientes where id=?';
       db.run(
         sqlDelete,
@@ -92,7 +143,13 @@ class Expedientes {
           }
         }
       );
-    });
+    }); */
+
+    const _id = new ObjectId(id);
+    const filter = {_id};
+    console.log(filter);
+    const myDocument = await this.collection.deleteOne(filter);
+    return myDocument;
   }
 }
 
