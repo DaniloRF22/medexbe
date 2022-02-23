@@ -15,3 +15,7 @@ passport.use(
     )
 );
 
+module.exports = {
+    passport,
+    jwtMiddleware: passport.authenticate('jwt', {session:false})
+  }
