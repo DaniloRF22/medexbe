@@ -9,7 +9,7 @@ const {passport, jwtMiddleware} = require('./seguridad/jwtHelper');
 router.use('/pacientes',verifyApiHeaderToken,jwtMiddleware, pacientesRoutes);
 router.use('/expedientes',verifyApiHeaderToken, expedientesRoutes);
 router.use(passport.initialize());
-router.use('/seguridad', seguridadRoutes);
+router.use('/seguridad', verifyApiHeaderToken, seguridadRoutes);
 
 
 module.exports= router;
