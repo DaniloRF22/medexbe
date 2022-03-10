@@ -81,7 +81,7 @@ class Pacientes {
     return myDocument;
   }
 
-  async updateOne (id, nombre, apellidos, identidad, telefono, correo) {
+  async updateOne (id, nombres, apellidos, identidad, telefono, correo) {
    /* return new Promise( (accept, reject) =>{
       const sqlUpdate = 'UPDATE pacientes set nombre = ?,apellidos = ?, telefono = ?, identidad = ?, email = ? where id = ?';
       db.run(
@@ -101,7 +101,7 @@ class Pacientes {
     const filter = {_id: new ObjectId(id)};
     const updateCmd = {
       '$set':{
-        nombre,
+        nombres,
         apellidos,
         identidad,
         telefono,
