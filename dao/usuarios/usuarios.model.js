@@ -72,6 +72,21 @@ class Usuarios {
   async comparePassword (rawPassword, dbPassword){
       return await bcrypt.compare(rawPassword, dbPassword);
   }
+
+  async updatePassword(email, newpassword){
+    const filter = {_id: new ObjectId(email)};
+    const userEmail = await this.collection.findOne(filter);
+    let hashnew = await this.hashPassword(newpassword);
+
+    const updateCmd ={
+        '$set':{
+            password:hashnew
+        }
+    };
+
+    const rslt = await this.collection.updateOne(userEmail,updateCmd);
+    return rslt;
+}
 }
 
 module.exports = Usuarios;
