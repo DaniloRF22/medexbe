@@ -15,23 +15,34 @@ const validatenew = [
     check('nombres')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isAlpha()
+        .isLength({min:3}),
     check('apellidos')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isAlpha()
+        .isLength({min:3}),
     check('identidad')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isNumeric()
+        .isLength({max:13})
+        .isLength({min:13}),
     check('email')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isEmail(),
     check('telefono')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isNumeric()
+        .isLength({max:8})
+        .isLength({min:8}),
     (req, res, next) =>{
         validateResult(req, res, next)
     }
@@ -40,23 +51,34 @@ const validateupdate = [
     check('nombres')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isAlpha()
+        .isLength({min:3}),
     check('apellidos')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isAlpha()
+        .isLength({min:3}),
     check('identidad')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isNumeric()
+        .isLength({max:13})
+        .isLength({min:13}),
     check('email')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isEmail(),
     check('telefono')
         .exists()
         .not()
-        .isEmpty(),
+        .isEmpty()
+        .isNumeric()
+        .isLength({max:8})
+        .isLength({min:8}),
     (req, res, next) =>{
         validateResult(req, res, next)
     }
